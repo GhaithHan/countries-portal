@@ -25,7 +25,7 @@ export type ContinentType =
   | "South America"
   | "Africa";
 
-type FlagsType = {
+export type FlagsType = {
   png: string;
   svg: string;
   alt: string;

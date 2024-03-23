@@ -1,13 +1,22 @@
-import { CountryDetailsType } from "../../types/types";
+import {
+  ContinentType,
+  FlagsType,
+  LanguagesType,
+  NameType,
+  RegionType,
+} from "../../types/types";
+import clsx from "clsx";
+import { useHover } from "../../hooks/useHover";
 
 type CountryCardProps = {
-  name: string;
+  name: NameType;
   population: number;
-  capital: string[];
-  flags: CountryDetailsType["flags"];
-  region: CountryDetailsType["continents"];
-  languages: CountryDetailsType["languages"];
-  continents: CountryDetailsType["continents"];
+  capital?: string[];
+  flags: FlagsType;
+  region?: RegionType;
+  languages?: LanguagesType;
+  continents: ContinentType[];
+  onClick?: () => void;
 };
 
 export function CountryCard({
@@ -16,24 +25,39 @@ export function CountryCard({
   capital,
   flags,
   region,
-  languages,
   continents,
 }: CountryCardProps) {
+  const { onmouseleave, onmouseover, showDetails } = useHover();
+
   return (
-    <div>
-      <p>{name}</p>
-      <p>{capital}</p>
-      <p>{population}</p>
-      <p>{population}</p>
-      <img src={flags.png} alt={flags.alt} />
-      <ul>
-        {languages &&
-          Object.entries(languages).map((language) => {
-            return <li>{language}</li>;
-          })}
-      </ul>
-      <p>{continents}</p>
-      <p>{region}</p>
+    <div
+      className={clsx(
+        "cursor-pointer shadow-md h-full w-full font-merriweather relative rounded-t-xl",
+        !showDetails && "rounded-b-xl"
+      )}
+      onMouseOver={onmouseover}
+      onMouseLeave={onmouseleave}
+    >
+      <img
+        className="rounded-t-xl w-full lg:h-64 h-32 lg:object-cover"
+        src={flags.png}
+        alt={flags.alt}
+      />
+      <p className="font-bold lg:text-xl pl-2 text-lg">{name.official}</p>
+
+      <div
+        className={clsx(
+          "pl-2 pb-2 absolute bg-white w-full z-50 rounded-b-xl text-sm lg:text-lg transition-opacity duration-500",
+          showDetails ? "opacity-100" : "opacity-0"
+        )}
+      >
+        <p className="font-semibold">
+          Capital: {capital?.find((cap) => typeof cap === "string")}
+        </p>
+        <p className="font-normal">Population: {population}</p>
+        <p className="font-normal">Continent: {continents}</p>
+        <p className="font-normal">Region: {region}</p>
+      </div>
     </div>
   );
 }
